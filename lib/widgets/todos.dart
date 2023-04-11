@@ -79,21 +79,31 @@ class _TodosState extends State<Todos> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              // TODO: 6. we should be able to change order of todos
-              child: SingleChildScrollView(
-                child: Column(
-                  children: todos
-                      // TODO 3
-                      .reversed
-                      .map((todo) => TodoTile(
-                            // TODO 2
-                            text: todo,
-                            onRemove: () {
-                              removeTodo(todo);
-                            },
-                          ))
-                      .toList(),
-                ),
+              // TODO 6
+
+              child: ReorderableListView(
+                onReorder: (oldIndex, newIndex) {
+                  if (oldIndex < newIndex){
+                    newIndex += 1;
+                  }
+      
+                  setState(() {
+                    final todo = todos.removeAt(todos.length - 1 - oldIndex);
+                    todos.insert(todos.length - newIndex, todo);
+                  });
+                
+                 
+                },
+                children: todos.reversed // TODO 3
+                    .map((todo) => TodoTile(
+                          // TODO 2
+                          key: UniqueKey(),
+                          text: todo,
+                          onRemove: () {
+                            removeTodo(todo);
+                          },
+                        ))
+                    .toList(),
               ),
             ),
           ],
