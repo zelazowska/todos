@@ -1,38 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:knam_example/widgets/todo_tile.dart';
 
 /// Displays a text field and a button for adding a todo with text from text
 /// field. Todos are removable. Todos are displayed sorted by creation, with
 /// newest being higher. You can change the order of todos. You cannot create
 /// a todo with empty text and if you try user is informed in a proper way.
-class Todos extends StatefulWidget {
+class Todos extends HookWidget {
   const Todos({super.key});
 
   @override
-  State createState() => _TodosState();
-}
-
-class _TodosState extends State<Todos> {
-  final controller = TextEditingController();
-  final todos = <String>[];
-
-  void addTodo(String todo) {
-    setState(() {
-      // TODO 1
-      todos.add(todo); //or todos.add(controller.text)
-    });
-    controller.clear();
-  }
-
-  void removeTodo(String todo) {
-    setState(() {
-      // TODO 4
-      todos.remove(todo);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = useTextEditingController();
+    final todos = useState(<String>[]);
+
     return Scaffold(
       body: SafeArea(
         bottom: false,
@@ -69,10 +50,8 @@ class _TodosState extends State<Todos> {
                   icon: const Icon(Icons.add),
                   color: Colors.black,
                   onPressed: () {
-                    addTodo(controller
-                        .text); //would work as addTodo if we state todos.add(controller.text)
-                    // TODO 1 controller.clear(); would also work here but
-                    // but we aim for minimal code in build
+                    todos.value = [...todos.value..insert(0, controller.text)];
+                    controller.clear(); // ... spread operator
                   },
                 ),
               ],
@@ -83,24 +62,24 @@ class _TodosState extends State<Todos> {
 
               child: ReorderableListView(
                 onReorder: (oldIndex, newIndex) {
-                  if (oldIndex < newIndex){
-                    newIndex += 1;
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
                   }
-      
-                  setState(() {
-                    final todo = todos.removeAt(todos.length - 1 - oldIndex);
-                    todos.insert(todos.length - newIndex, todo);
-                  });
-                
-                 
+
+                  final todoList = todos.value;
+                  final todo = todoList.removeAt(oldIndex);
+                  todoList.insert(newIndex, todo);
+                  todos.value = [...todoList];
                 },
-                children: todos.reversed // TODO 3
+                children: todos.value // TODO 3
                     .map((todo) => TodoTile(
                           // TODO 2
                           key: UniqueKey(),
                           text: todo,
                           onRemove: () {
-                            removeTodo(todo);
+                            final todoList = todos.value;
+                            todoList.remove(todo);
+                            todos.value = [...todoList];
                           },
                         ))
                     .toList(),

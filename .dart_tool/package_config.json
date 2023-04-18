@@ -50,6 +50,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_hooks",
+      "rootUri": "file:///C:/Users/maria/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_hooks-0.18.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///C:/Users/maria/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-2.0.1",
       "packageUri": "lib/",
@@ -152,7 +158,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-04-11T16:25:19.871871Z",
+  "generated": "2023-04-18T16:44:24.002325Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }
